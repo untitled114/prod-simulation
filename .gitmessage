@@ -1,0 +1,6 @@
+# <type>(<scope>): <subject>
+#
+# Types: feat, fix, refactor, test, docs, chore, style, perf, ci
+# Scope: monitor, chaos, validation, jobs, api, dashboard, db, config
+#
+# Example: feat(monitor): add blocking chain detection via recursive CTE

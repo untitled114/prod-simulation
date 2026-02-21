@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SQL Server Sentinel</title>
+    <link rel="stylesheet" href="/static/css/sentinel.css">
+</head>
+<body>
+    <header>
+        <h1>SQL Server Sentinel</h1>
+        <div class="header-meta">
+            <span id="status-badge" class="badge badge-unknown">--</span>
+            <span id="last-updated">--</span>
+        </div>
+    </header>
+
+    <main>
+        <!-- Health Cards -->
+        <section class="health-grid" id="health-section">
+            <div class="card metric-card" id="card-cpu">
+                <div class="metric-label">CPU</div>
+                <div class="metric-value" id="metric-cpu">--</div>
+                <div class="metric-unit">%</div>
+            </div>
+            <div class="card metric-card" id="card-memory">
+                <div class="metric-label">Memory</div>
+                <div class="metric-value" id="metric-memory">--</div>
+                <div class="metric-unit">MB</div>
+            </div>
+            <div class="card metric-card" id="card-connections">
+                <div class="metric-label">Connections</div>
+                <div class="metric-value" id="metric-connections">--</div>
+                <div class="metric-unit">active</div>
+            </div>
+            <div class="card metric-card" id="card-blocking">
+                <div class="metric-label">Blocking</div>
+                <div class="metric-value" id="metric-blocking">--</div>
+                <div class="metric-unit">chains</div>
+            </div>
+            <div class="card metric-card" id="card-long-queries">
+                <div class="metric-label">Long Queries</div>
+                <div class="metric-value" id="metric-long-queries">--</div>
+                <div class="metric-unit">&gt;30s</div>
+            </div>
+        </section>
+
+        <!-- Middle row: Incidents + Jobs -->
+        <section class="mid-grid">
+            <div class="card">
+                <h2>Open Incidents <span class="count-badge" id="incident-count">0</span></h2>
+                <div id="incidents-list" class="scroll-list">
+                    <p class="empty-state">No open incidents</p>
+                </div>
+            </div>
+            <div class="card">
+                <h2>Scheduled Jobs</h2>
+                <div id="jobs-list" class="scroll-list">
+                    <p class="empty-state">Loading...</p>
+                </div>
+                <h3>Recent Runs</h3>
+                <div id="job-runs-list" class="scroll-list">
+                    <p class="empty-state">No recent runs</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Healthcare Metrics -->
+        <section class="healthcare-grid" id="healthcare-section">
+            <div class="card metric-card" id="card-claims">
+                <div class="metric-label">Claims Today</div>
+                <div class="metric-value" id="metric-claims">--</div>
+                <div class="metric-unit">count</div>
+            </div>
+            <div class="card metric-card" id="card-rejection">
+                <div class="metric-label">Rejection Rate</div>
+                <div class="metric-value" id="metric-rejection">--</div>
+                <div class="metric-unit">%</div>
+            </div>
+            <div class="card metric-card" id="card-generic">
+                <div class="metric-label">Generic Rate</div>
+                <div class="metric-value" id="metric-generic">--</div>
+                <div class="metric-unit">%</div>
+            </div>
+            <div class="card metric-card" id="card-pdc">
+                <div class="metric-label">Avg PDC</div>
+                <div class="metric-value" id="metric-pdc">--</div>
+                <div class="metric-unit">ratio</div>
+            </div>
+        </section>
+
+        <!-- Bottom row: Validation + Chaos -->
+        <section class="mid-grid">
+            <div class="card">
+                <h2>Data Validation
+                    <button class="btn btn-sm" onclick="runValidation()">Run Now</button>
+                </h2>
+                <div class="scorecard" id="validation-scorecard">
+                    <div class="score-ring">
+                        <span id="score-percent">--</span><span class="score-unit">%</span>
+                    </div>
+                    <div class="score-details">
+                        <span><strong id="score-passed">0</strong> passed</span>
+                        <span><strong id="score-failed">0</strong> failed</span>
+                        <span><strong id="score-critical">0</strong> critical</span>
+                    </div>
+                </div>
+                <div id="validation-rules" class="scroll-list"></div>
+            </div>
+            <div class="card">
+                <h2>Chaos Engine
+                    <button class="btn btn-sm btn-danger" onclick="triggerRandomChaos()">Random</button>
+                </h2>
+                <div id="chaos-scenarios" class="scroll-list">
+                    <p class="empty-state">Loading...</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Postmortems -->
+        <section class="full-width">
+            <div class="card">
+                <h2>Recent Postmortems</h2>
+                <div id="postmortems-list" class="scroll-list">
+                    <p class="empty-state">No postmortems yet</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <span>SQL Server Sentinel v1.0.0</span>
+        <a href="/docs" target="_blank">API Docs</a>
+    </footer>
+
+    <script src="/static/js/sentinel.js"></script>
+</body>
+</html>

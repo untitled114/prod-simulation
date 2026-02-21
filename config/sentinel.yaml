@@ -1,0 +1,35 @@
+database:
+  host: "${DB_HOST:sqlserver}"
+  port: 1433
+  name: "${DB_NAME:SentinelDB}"
+  user: "${DB_USER:sa}"
+  password: "${SA_PASSWORD}"
+  driver: "ODBC Driver 18 for SQL Server"
+  trust_cert: true
+  connect_timeout: 10
+  query_timeout: 30
+
+thresholds:
+  cpu_percent_warning: 70.0
+  cpu_percent_critical: 90.0
+  memory_percent_warning: 75.0
+  memory_percent_critical: 90.0
+  blocking_chain_warning: 2
+  blocking_chain_critical: 5
+  long_query_seconds_warning: 30
+  long_query_seconds_critical: 120
+  connection_count_warning: 80
+  connection_count_critical: 150
+  tempdb_usage_mb_warning: 500.0
+  tempdb_usage_mb_critical: 1000.0
+  # Healthcare thresholds
+  claim_rejection_rate_warning: 5.0
+  claim_rejection_rate_critical: 15.0
+  generic_dispensing_rate_warning: 80.0
+  pdc_adherence_warning: 0.80
+
+monitor:
+  poll_interval_seconds: 10
+  snapshot_retention_hours: 24
+  auto_remediate: true
+  escalation_timeout_seconds: 300

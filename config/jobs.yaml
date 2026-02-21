@@ -1,0 +1,95 @@
+jobs:
+  - name: "health_snapshot"
+    schedule_cron: "@every 30s"
+    sql_inline: "EXEC sp_capture_health_snapshot"
+    enabled: false
+    timeout_seconds: 15
+    description: "Disabled — monitor loop captures snapshots. Enable only if monitor is off."
+
+  - name: "stale_session_cleanup"
+    schedule_cron: "*/5 * * * *"
+    sql_inline: "EXEC sp_cleanup_stale_sessions @idle_minutes = 60"
+    enabled: true
+    timeout_seconds: 30
+    description: "Kill idle sessions older than 60 minutes"
+
+  - name: "snapshot_retention"
+    schedule_cron: "*/30 * * * *"
+    sql_inline: >
+      DELETE FROM health_snapshots
+      WHERE captured_at < DATEADD(HOUR, -24, SYSUTCDATETIME())
+    enabled: true
+    timeout_seconds: 30
+    description: "Purge health snapshots older than 24 hours"
+
+  - name: "validation_run"
+    schedule_cron: "*/10 * * * *"
+    sql_inline: "SELECT 1"
+    enabled: false
+    timeout_seconds: 120
+    description: "Data validation (runs via Python engine, not raw SQL)"
+
+  # --- ETL Jobs ---
+  - name: "etl_daily_order_summary"
+    schedule_cron: "0 1 * * *"
+    sql_inline: "EXEC sp_etl_daily_order_summary"
+    enabled: true
+    timeout_seconds: 60
+    description: "ETL: aggregate orders into daily summary (runs at 1 AM UTC)"
+
+  - name: "etl_customer_health"
+    schedule_cron: "0 2 * * *"
+    sql_inline: "EXEC sp_etl_customer_health"
+    enabled: true
+    timeout_seconds: 120
+    description: "ETL: recompute customer health scores via MERGE (runs at 2 AM UTC)"
+
+  - name: "etl_incident_metrics"
+    schedule_cron: "0 * * * *"
+    sql_inline: "EXEC sp_etl_incident_metrics @hours_back = 1"
+    enabled: true
+    timeout_seconds: 30
+    description: "ETL: roll up incident data into hourly metrics for SLA reporting"
+
+  # --- Healthcare ETL Jobs ---
+  - name: "etl_claim_ingestion"
+    schedule_cron: "*/15 * * * *"
+    sql_inline: "SELECT 1"
+    enabled: false
+    timeout_seconds: 120
+    description: "ETL: ingest pharmacy claims from staging (runs via Python engine with batch_id)"
+
+  - name: "etl_dim_patient_scd2"
+    schedule_cron: "0 3 * * *"
+    sql_inline: "EXEC sp_etl_dim_patient_scd2"
+    enabled: true
+    timeout_seconds: 180
+    description: "ETL: SCD Type 2 merge for patient dimension (runs at 3 AM UTC)"
+
+  - name: "etl_patient_adherence"
+    schedule_cron: "0 4 * * 1"
+    sql_inline: "EXEC sp_etl_patient_adherence"
+    enabled: true
+    timeout_seconds: 300
+    description: "ETL: calculate PDC adherence metrics (runs at 4 AM UTC every Monday)"
+
+  - name: "etl_pharmacy_fill_summary"
+    schedule_cron: "0 1 * * *"
+    sql_inline: "EXEC sp_etl_pharmacy_fill_summary"
+    enabled: true
+    timeout_seconds: 120
+    description: "ETL: aggregate daily pharmacy fill summaries (runs at 1 AM UTC)"
+
+  - name: "maintenance_update_statistics"
+    schedule_cron: "0 5 * * 0"
+    sql_inline: "EXEC sp_maintenance_update_statistics @sample_percent = 50"
+    enabled: true
+    timeout_seconds: 600
+    description: "Maintenance: update statistics for all user tables (runs at 5 AM UTC Sundays)"
+
+  - name: "governance_catalog_scan"
+    schedule_cron: "0 6 * * 1"
+    sql_inline: "SELECT 1"
+    enabled: false
+    timeout_seconds: 60
+    description: "Governance: schema scan for PHI classification (runs via Python engine)"

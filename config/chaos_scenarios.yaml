@@ -1,0 +1,54 @@
+scenarios:
+  - name: "Long Running Query"
+    description: "Runs a 45-second blocking query"
+    severity: "medium"
+    cooldown_seconds: 60
+    enabled: true
+
+  - name: "Deadlock"
+    description: "Creates conditions for deadlock detection"
+    severity: "high"
+    cooldown_seconds: 30
+    enabled: true
+
+  - name: "Data Corruption"
+    description: "Injects invalid data to trigger validation failures"
+    severity: "high"
+    cooldown_seconds: 30
+    enabled: true
+
+  - name: "Orphaned Records"
+    description: "Creates orphaned foreign key references"
+    severity: "medium"
+    cooldown_seconds: 30
+    enabled: true
+
+  - name: "Job Failure"
+    description: "Simulates a scheduled job failure"
+    severity: "low"
+    cooldown_seconds: 15
+    enabled: true
+
+  - name: "Connection Flood"
+    description: "Opens 20 concurrent connections"
+    severity: "high"
+    cooldown_seconds: 60
+    enabled: true
+
+  - name: "Claim Volume Spike"
+    description: "Bulk inserts ~200 pharmacy claims with mixed statuses"
+    severity: "high"
+    cooldown_seconds: 60
+    enabled: true
+
+  - name: "PHI Exposure"
+    description: "Inserts 100 suspicious PHI access records from a single user"
+    severity: "high"
+    cooldown_seconds: 60
+    enabled: true
+
+  - name: "Formulary Change"
+    description: "Moves generics from tier 1 to tier 3 with prior auth required"
+    severity: "medium"
+    cooldown_seconds: 30
+    enabled: true
